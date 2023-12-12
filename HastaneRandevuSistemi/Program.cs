@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using HastaneRandevuSistemi.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<HastaneRandevuSistemiContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("HastaneRandevuSistemiContext") ?? throw new InvalidOperationException("Connection string 'HastaneRandevuSistemiContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
