@@ -13,15 +13,16 @@ namespace HastaneRandevuSistemi.Models
 	{
 		[Key]
 		public int Id { get; set; }
-		public int hastaId { get; set; }
-		[ForeignKey("Id")]
+        [ForeignKey("Id")]
+        public int hastaId { get; set; }
 		public Hasta hasta { get; set; }
 		[Required]
         [CustomTimeRange(480, 1020)]
         [DisplayName("Randevu Tarihi")]
         public DateTime RandevuTarihi { get; set; }
-		public int doktorId { get; set; }
-		[ForeignKey("Id")]
+        [ForeignKey("Id")]
+        [DisplayName("Doktor")]
+        public int doktorId { get; set; }
 		public Doktor doktor { get; set; }
 	}
 }

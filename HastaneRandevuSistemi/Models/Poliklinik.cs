@@ -16,6 +16,6 @@ namespace HastaneRandevuSistemi.Models
         [Required]
         [DisplayName("Poliklinik")]
         public string PoliklinikIsmi { get; set; }
-		public List<Doktor> klinikler {  get; set; }
+		public List<Doktor>? klinikler {  get; set; }
     }
 }
