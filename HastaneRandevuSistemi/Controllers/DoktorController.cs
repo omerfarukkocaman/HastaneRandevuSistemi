@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HastaneRandevuSistemi.Data;
 using HastaneRandevuSistemi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HastaneRandevuSistemi.Controllers
 {
@@ -46,6 +47,7 @@ namespace HastaneRandevuSistemi.Controllers
         }
 
         // GET: Doktor/Create
+        [Authorize(Policy = "AdminPolicy")]
         public IActionResult Create()
         {
             return View();
@@ -158,6 +160,27 @@ namespace HastaneRandevuSistemi.Controllers
         private bool DoktorExists(int id)
         {
           return (_context.Doktor?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        public IActionResult DoktorGiris()
+        {
+            return View();
+        }
+        public async Task<IActionResult> GirisYap([Bind("KimlikNo,Sifre")] Hasta hasta)
+        {
+            foreach (var user in _context.Hasta)
+            {
+                if (user.KimlikNo == hasta.KimlikNo && user.Sifre == hasta.Sifre)
+                {
+                    HttpContext.Session.SetString("SessionUser", hasta.KimlikNo);
+                    var cookieOpt = new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(20)
+                    };
+                    return RedirectToAction("Index");
+                }
+            }
+            TempData["hata"] = "Kullanıcı adı veya şifre hatalı";
+            return RedirectToAction("Index");
         }
     }
 }

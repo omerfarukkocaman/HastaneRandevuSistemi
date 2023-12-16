@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HastaneRandevuSistemi.Data;
 using HastaneRandevuSistemi.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace HastaneRandevuSistemi.Controllers
 {
@@ -60,7 +61,15 @@ namespace HastaneRandevuSistemi.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(hasta);
+                foreach (var user in _context.Hasta)
+                {
+                    if (user.KimlikNo == hasta.KimlikNo)
+                    {
+                        TempData["hata"] = "Bu kişi zaten kayıtlı";
+                        return View();
+                    }
+                }
+                    _context.Add(hasta);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -159,5 +168,28 @@ namespace HastaneRandevuSistemi.Controllers
         {
           return (_context.Hasta?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        public IActionResult Giris()
+        {
+            return View();
+        }
+        public async Task<IActionResult> GirisYap([Bind("KimlikNo,Sifre")] Hasta hasta)
+        {
+            foreach(var user in _context.Hasta)
+            {
+                if(user.KimlikNo==hasta.KimlikNo&&user.Sifre==hasta.Sifre)
+                {
+                    HttpContext.Session.SetString("SessionUser", hasta.KimlikNo);
+                    var cookieOpt = new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(20)
+                    };
+                return RedirectToAction("Index");
+                }
+                
+            }
+            TempData["hata"] = "Kullanıcı adı veya şifre hatalı";
+            return RedirectToAction("Index");
+        }
+
     }
 }

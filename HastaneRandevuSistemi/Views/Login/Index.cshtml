@@ -1,0 +1,36 @@
+﻿@model HastaneRandevuSistemi.Models.Hasta
+
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">Giriş Yap</h2>
+            <hr />
+            <form asp-action="GirisYap" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="KimlikNo" class="control-label"></label>
+                    <input asp-for="KimlikNo" class="form-control" required />
+                    <span asp-validation-for="KimlikNo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Sifre" class="control-label"></label>
+                    <input asp-for="Sifre" type="password" class="form-control" required />
+                    <span asp-validation-for="Sifre" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="d-flex">
+                    <div class="form-group col-md-5 mr-2">
+                        <a class="btn btn-primary nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="GirisYap">Giriş Yap</a>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="DoktorIndex"><u>Doktor Giriş</u></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

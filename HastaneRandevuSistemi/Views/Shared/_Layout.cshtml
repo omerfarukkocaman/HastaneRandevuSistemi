@@ -17,12 +17,28 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="col-md-10"></div>
+                <div class="col-md-10">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2"></div>
+                </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between col-md-2">
                     <ul class="navbar-nav flex-grow-1">
+                        @inject IHttpContextAccessor HttpContextAccessor
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("SessionUser") != null)
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-primary nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="Giris">Giriş Yap</a>
+                            </li>
+                        }
+                        else
+                        {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Hastane</a>
+                            <a class="btn btn-danger nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="Giris">@HttpContextAccessor.HttpContext.Session.GetString("SessionUser") | Çıkış Yap</a>
                         </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -36,7 +52,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - HastaneRandevuSistemi - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - HastaneRandevuSistemi
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

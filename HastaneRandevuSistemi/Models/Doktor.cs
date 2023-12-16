@@ -19,11 +19,16 @@ namespace HastaneRandevuSistemi.Models
         public string Isim { get; set; }
 		[Required]
         [DisplayName("Oda Numarası")]
-        public int odaNo { get; set; }
+        public string odaNo { get; set; }
 		[DataType(DataType.Password)]
 		[StringLength(16, MinimumLength = 8, ErrorMessage = "Metin 8 ile 16 karakter arasında olmalıdır.")]
 		[Required]
         [DisplayName("Şifre")]
         public string Sifre { get; set; }
-	}
+        [ForeignKey("Id")]
+        [DisplayName("Poliklinik")]
+        public int poliklinikId { get; set; }
+        public Poliklinik poliklinik { get; set; }
+
+    }
 }

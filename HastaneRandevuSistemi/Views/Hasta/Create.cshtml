@@ -3,7 +3,10 @@
 @{
     ViewData["Title"] = "Create";
 }
-
+@if (TempData["hata"] is not null)
+{
+    <div class="alert alert-danger"> @TempData["hata"] </div>
+}
 <h1>Create</h1>
 
 <h4>Hasta</h4>
