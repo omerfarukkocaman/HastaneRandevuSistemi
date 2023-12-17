@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Giriş Yap";
 }
+@if (TempData["hata"] is not null)
+{
+    <div class="alert alert-danger"> @TempData["hata"] </div>
+}
 
 <div class="container">
     <div class="row justify-content-center">
@@ -22,18 +26,18 @@
                     <span asp-validation-for="Sifre" class="text-danger"></span>
                 </div>
                 <br />
-                <div class="d-flex">
-                    <div class="form-group col-md-3 mr-2">
-                        <a class="btn btn-primary nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="GirisYap">Giriş Yap</a>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <a class="btn btn-secondary nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="Create">Kayıt Ol</a>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="DoktorIndex"><u>Doktor Giriş</u></a>
-                    </div>
+                <div class="form-group">
+                    <input type="submit" value="Giriş Yap" class="btn btn-primary" />
                 </div>
             </form>
+            <br />
+            <div class="form-group">
+                <a class="btn btn-secondary nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="Create">Kayıt Ol</a>
+            </div>
+            <div class="form-group text-center">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="DoktorIndex"><u>Doktor Giriş</u></a>
+            </div>
+            
         </div>
     </div>
 </div>

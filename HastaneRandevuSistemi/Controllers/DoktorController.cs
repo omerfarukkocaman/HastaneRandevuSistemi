@@ -47,7 +47,6 @@ namespace HastaneRandevuSistemi.Controllers
         }
 
         // GET: Doktor/Create
-        [Authorize(Policy = "AdminPolicy")]
         public IActionResult Create()
         {
             return View();
@@ -165,7 +164,7 @@ namespace HastaneRandevuSistemi.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> GirisYap([Bind("KimlikNo,Sifre")] Hasta hasta)
+        public IActionResult GirisYap(Hasta hasta)
         {
             foreach (var user in _context.Hasta)
             {
@@ -176,6 +175,8 @@ namespace HastaneRandevuSistemi.Controllers
                     {
                         Expires = DateTime.Now.AddMinutes(20)
                     };
+                    HttpContext.Response.Cookies.Append("CookieTC", user.KimlikNo, cookieOpt);
+                    HttpContext.Session.SetString("UserRole", "Doktor");
                     return RedirectToAction("Index");
                 }
             }

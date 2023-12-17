@@ -22,7 +22,7 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu
         public async Task<IActionResult> Index()
         {
-            var hastaneRandevuSistemiContext = _context.Randevu.Include(r => r.doktor).Include(r => r.hasta);
+            var hastaneRandevuSistemiContext = _context.Randevu.Include(r => r.Hasta).Include(r => r.doktor);
             return View(await hastaneRandevuSistemiContext.ToListAsync());
         }
 
@@ -35,8 +35,8 @@ namespace HastaneRandevuSistemi.Controllers
             }
 
             var randevu = await _context.Randevu
+                .Include(r => r.Hasta)
                 .Include(r => r.doktor)
-                .Include(r => r.hasta)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (randevu == null)
             {
@@ -49,8 +49,8 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu/Create
         public IActionResult Create()
         {
-            ViewData["Id"] = new SelectList(_context.Set<Doktor>(), "Id", "Isim");
-            ViewData["Id"] = new SelectList(_context.Hasta, "Id", "Isim");
+            ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim");
+            ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim");
             return View();
         }
 
@@ -59,7 +59,7 @@ namespace HastaneRandevuSistemi.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,hastaId,RandevuTarihi,doktorId")] Randevu randevu)
+        public async Task<IActionResult> Create([Bind("Id,HastaId,RandevuTarihi,DoktorId")] Randevu randevu)
         {
             if (ModelState.IsValid)
             {
@@ -67,8 +67,8 @@ namespace HastaneRandevuSistemi.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Set<Doktor>(), "Id", "Isim", randevu.Id);
-            ViewData["Id"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.Id);
+            ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
+            ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
             return View(randevu);
         }
 
@@ -85,8 +85,8 @@ namespace HastaneRandevuSistemi.Controllers
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Set<Doktor>(), "Id", "Isim", randevu.Id);
-            ViewData["Id"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.Id);
+            ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
+            ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
             return View(randevu);
         }
 
@@ -95,7 +95,7 @@ namespace HastaneRandevuSistemi.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,hastaId,RandevuTarihi,doktorId")] Randevu randevu)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,HastaId,RandevuTarihi,DoktorId")] Randevu randevu)
         {
             if (id != randevu.Id)
             {
@@ -122,8 +122,8 @@ namespace HastaneRandevuSistemi.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Set<Doktor>(), "Id", "Isim", randevu.Id);
-            ViewData["Id"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.Id);
+            ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
+            ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
             return View(randevu);
         }
 
@@ -136,8 +136,8 @@ namespace HastaneRandevuSistemi.Controllers
             }
 
             var randevu = await _context.Randevu
+                .Include(r => r.Hasta)
                 .Include(r => r.doktor)
-                .Include(r => r.hasta)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (randevu == null)
             {

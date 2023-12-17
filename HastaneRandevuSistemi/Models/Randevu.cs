@@ -9,20 +9,23 @@ using System.Web;
 
 namespace HastaneRandevuSistemi.Models
 {
-	public class Randevu
-	{
-		[Key]
-		public int Id { get; set; }
-        [ForeignKey("Id")]
-        public int hastaId { get; set; }
-		public Hasta hasta { get; set; }
-		[Required]
+    public class Randevu
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [ForeignKey("hasta")]
+        public int HastaId { get; set; }
+        public Hasta Hasta { get; set; }
+
+        [Required]
         [CustomTimeRange(480, 1020)]
         [DisplayName("Randevu Tarihi")]
         public DateTime RandevuTarihi { get; set; }
-        [ForeignKey("Id")]
+
+        [ForeignKey("doktor")]
         [DisplayName("Doktor")]
-        public int doktorId { get; set; }
-		public Doktor doktor { get; set; }
-	}
+        public int DoktorId { get; set; }
+        public Doktor doktor { get; set; }
+    }
 }

@@ -11,11 +11,13 @@ namespace HastaneRandevuSistemi.Models
 {
     public class Poliklinik
     {
-		[Key]
-		public int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
+
         [Required]
         [DisplayName("Poliklinik")]
         public string PoliklinikIsmi { get; set; }
-		public List<Doktor>? klinikler {  get; set; }
+
+        public List<Doktor>? Doktorlar { get; set; }
     }
 }

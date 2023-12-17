@@ -16,14 +16,12 @@ builder.Services.AddAuthorization(options =>
 {
     options.DefaultPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
-        .RequireRole("User")
+        .RequireRole("Hasta")
         .Build();
-});
-
-builder.Services.AddAuthorization(options =>
-{
+    options.AddPolicy("Doktor", policy => policy.RequireRole("Doktor"));
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
 });
+
 builder.Services.AddSession(options =>
 {
 	options.IdleTimeout = TimeSpan.FromMinutes(45);
