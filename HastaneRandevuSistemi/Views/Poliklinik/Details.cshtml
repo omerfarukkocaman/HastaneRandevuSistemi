@@ -1,4 +1,4 @@
-﻿@model HastaneRandevuSistemi.Models.Randevu
+﻿@model HastaneRandevuSistemi.Models.Poliklinik
 
 @{
     ViewData["Title"] = "Details";
@@ -7,24 +7,21 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Randevu</h4>
+    <h4>Poliklinik</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Hasta)
+            @Html.DisplayNameFor(model => model.PoliklinikIsmi)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Hasta.Isim)
+            @Html.DisplayFor(model => model.PoliklinikIsmi)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RandevuTarihi)
+            @Html.DisplayNameFor(model => model.hastane)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RandevuTarihi)
+            @Html.DisplayFor(model => model.hastane.Id)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.doktor)
-        </dt>
     </dl>
 </div>
 <div>

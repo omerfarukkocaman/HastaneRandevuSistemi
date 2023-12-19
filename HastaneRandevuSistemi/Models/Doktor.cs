@@ -19,7 +19,6 @@ namespace HastaneRandevuSistemi.Models
         public string Isim { get; set; }
         [Required]
         [DisplayName("Oda Numarası")]
-        public string Hastane { get; set; } = "Hastane";
         public string odaNo { get; set; } 
 		[DataType(DataType.Password)]
 		[StringLength(16, MinimumLength = 8, ErrorMessage = "Metin 8 ile 16 karakter arasında olmalıdır.")]

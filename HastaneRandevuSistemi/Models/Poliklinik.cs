@@ -17,6 +17,9 @@ namespace HastaneRandevuSistemi.Models
         [Required]
         [DisplayName("Poliklinik")]
         public string PoliklinikIsmi { get; set; }
+        [ForeignKey("hastane")]
+        public int HastaneId { get; set; }
+        public Hastane hastane { get; set; }
 
         public List<Doktor>? Doktorlar { get; set; }
     }

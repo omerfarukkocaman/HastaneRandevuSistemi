@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HastaneRandevuSistemi.Models.Randevu>
+﻿@model IEnumerable<HastaneRandevuSistemi.Models.Poliklinik>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,13 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Hasta)
+                @Html.DisplayNameFor(model => model.PoliklinikIsmi)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RandevuTarihi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.doktor)
+                @Html.DisplayNameFor(model => model.hastane)
             </th>
             <th></th>
         </tr>
@@ -28,10 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Hasta.Isim)
+                @Html.DisplayFor(modelItem => item.PoliklinikIsmi)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RandevuTarihi)
+                @Html.DisplayFor(modelItem => item.hastane.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -1,4 +1,4 @@
-﻿@model HastaneRandevuSistemi.Models.Randevu
+﻿@model HastaneRandevuSistemi.Models.Hastane
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,25 +8,21 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Randevu</h4>
+    <h4>Hastane</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Hasta)
+            @Html.DisplayNameFor(model => model.HastaneIsmi)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Hasta.Isim)
+            @Html.DisplayFor(model => model.HastaneIsmi)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RandevuTarihi)
+            @Html.DisplayNameFor(model => model.ilce)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RandevuTarihi)
+            @Html.DisplayFor(model => model.ilce.Id)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.doktor)
-        </dt>
-        
     </dl>
     
     <form asp-action="Delete">
