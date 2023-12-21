@@ -47,7 +47,7 @@ namespace HastaneRandevuSistemi.Controllers
         }
 
         // GET: Randevu/Create
-        public IActionResult Create()
+        public IActionResult RandevuAl()
         {
             ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim");
             ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim");
@@ -169,6 +169,17 @@ namespace HastaneRandevuSistemi.Controllers
         private bool RandevuExists(int id)
         {
           return (_context.Randevu?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        [HttpGet]
+        public IActionResult GetAvailableAppointments(DateTime selectedDate)
+        {
+            // Belirli bir tarihe ait uygun randevu saatlerini çekme
+            var availableHours = _context.Randevu
+                .Where(r => r.RandevuTarihi.Date == selectedDate.Date)
+                .Select(r => r.RandevuTarihi.Hour)
+                .ToList();
+
+            return Json(availableHours);
         }
     }
 }
