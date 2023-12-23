@@ -1,5 +1,7 @@
-﻿using HastaneRandevuSistemi.Models;
+﻿using HastaneRandevuSistemi.Data;
+using HastaneRandevuSistemi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace HastaneRandevuSistemi.Controllers
@@ -7,11 +9,10 @@ namespace HastaneRandevuSistemi.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-
-		public HomeController(ILogger<HomeController> logger)
-		{
-			_logger = logger;
-		}
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
 
 		public IActionResult Index()
 		{
@@ -23,5 +24,6 @@ namespace HastaneRandevuSistemi.Controllers
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
-	}
+        
+    }
 }

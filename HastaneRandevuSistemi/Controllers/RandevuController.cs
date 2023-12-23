@@ -49,8 +49,9 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu/Create
         public IActionResult RandevuAl()
         {
-            ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim");
-            ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim");
+            //int hastaid= HttpContext.Session.GetInt32("SessionId").GetValueOrDefault();
+            //ViewData["HastaId"] = hastaid;
+            ViewData["SehirId"] = new SelectList(_context.Sehir, "Id", "SehirIsmi");
             return View();
         }
 
@@ -59,17 +60,14 @@ namespace HastaneRandevuSistemi.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,HastaId,RandevuTarihi,DoktorId")] Randevu randevu)
+        public async Task<IActionResult> RandevuAl([Bind("Id,HastaId,RandevuTarihi.Date,RandevuTarihi.Hour,DoktorId")] Randevu randevu)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(randevu);
+             _context.Add(randevu);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
-            ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
-            return View(randevu);
+            //ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
+            //ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
+            //return View(randevu);
         }
 
         // GET: Randevu/Edit/5
@@ -171,15 +169,21 @@ namespace HastaneRandevuSistemi.Controllers
           return (_context.Randevu?.Any(e => e.Id == id)).GetValueOrDefault();
         }
         [HttpGet]
-        public IActionResult GetAvailableAppointments(DateTime selectedDate)
+        public IActionResult DoluSaatler(DateTime selectedDate)
         {
             // Belirli bir tarihe ait uygun randevu saatlerini çekme
-            var availableHours = _context.Randevu
+            var dolusaatler = _context.Randevu
                 .Where(r => r.RandevuTarihi.Date == selectedDate.Date)
                 .Select(r => r.RandevuTarihi.Hour)
                 .ToList();
 
-            return Json(availableHours);
+            return Json(dolusaatler);
+        }
+        [HttpGet]
+        public IActionResult GetIlceler(int sehirId)
+        {
+            var ilceler = _context.Ilce.Where(ilce => ilce.SehirId == sehirId).ToList();
+            return Json(ilceler);
         }
     }
 }

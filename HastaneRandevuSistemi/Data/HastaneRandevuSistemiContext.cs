@@ -18,6 +18,7 @@ namespace HastaneRandevuSistemi.Data
         public DbSet<HastaneRandevuSistemi.Models.Doktor>? Doktor { get; set; }
         public DbSet<HastaneRandevuSistemi.Models.Poliklinik>? Poliklinik { get; set; }
         public DbSet<HastaneRandevuSistemi.Models.Hastane>? Hastane { get; set; }
-
+        public DbSet<HastaneRandevuSistemi.Models.Sehir>? Sehir { get; set; }
+        public DbSet<HastaneRandevuSistemi.Models.Ilce>? Ilce { get; set; }
     }
 }

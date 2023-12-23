@@ -1,5 +1,4 @@
 ﻿@model HastaneRandevuSistemi.Models.Randevu
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <h4>Randevu</h4>
 <hr />
 <div class="row">
@@ -7,22 +6,14 @@
         <form asp-action="RandevuAl">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="HastaId" class="control-label"></label>
-                <select asp-for="HastaId" class ="form-control" asp-items="ViewBag.HastaId"></select>
-            </div>
-            <label for="tarih">Tarih:</label>
-            <input type="date" id="tarih" name="tarih" required onchange="getAvailableAppointments()">
-            <br>
-
-            <!-- Saat Seçimi -->
-            <label for="saat">Saat:</label>
-            <select id="saat" name="saat" required></select>
-            <div class="form-group">
-                <label asp-for="DoktorId" class="control-label"></label>
-                <select asp-for="DoktorId" class ="form-control" asp-items="ViewBag.DoktorId"></select>
+                <label asp-for="doktor.poliklinik.hastane.ilce.SehirId" class="control-label"></label>
+                <select id="sehirDropdown" asp-for="doktor.poliklinik.hastane.ilce.SehirId" class="form-control" asp-items="ViewBag.SehirId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label for="ilce">Ilçe:</label>
+                <select id="ilceDropdown" name="ilce" class="form-control" disabled>
+                    <!-- İlçe seçenekleri burada dinamik olarak eklenecek -->
+                </select>
             </div>
         </form>
     </div>
@@ -32,80 +23,29 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <script>
-    var minDate = new Date();
-    var maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 15);
+    $(document).ready(function () {
+        $("#sehirDropdown").change(function () {
+            var sehirId = $(this).val();
 
-    // Tarih Seçimine Min ve Max Değerleri Atama
-    document.getElementById("tarih").setAttribute("min", formatDate(minDate));
-    document.getElementById("tarih").setAttribute("max", formatDate(maxDate));
+            // Seçilen şehir üzerinden ilçeleri getir
+            $.ajax({
+                type: "GET",
+                url: "/Randevu/GetIlceler",
+                data: { sehirId: SehirId },
+                success: function (ilceler) {
+                    var ilceDropdown = $("#ilceDropdown");
+                    ilceDropdown.prop("disabled", false).empty();
 
-    function getAvailableAppointments() {
-        var selectedDate = document.getElementById("tarih").value;
-
-        // AJAX ile server tarafına sorgu gönderme
-        $.ajax({
-            url: '/Randevu/GetAvailableAppointments',
-            type: 'GET',
-            data: { selectedDate: selectedDate },
-            success: function (reservedHours) {
-                // Tüm saatleri oluştur
-                var allHours = generateAllHours();
-
-                // Alınmış saatleri çıkart
-                var availableHours = allHours.filter(hour => !reservedHours.includes(hour));
-
-                // Saatleri HTML içerisine ekle
-                var selectSaat = document.getElementById("saat");
-                selectSaat.innerHTML = "";
-
-                availableHours.forEach(function (hour) {
-                    var option = document.createElement("option");
-                    option.text = hour;
-                    option.value = hour;
-                    selectSaat.add(option);
-                });
-            }
-        });
-    }
-
-    // Tüm saatleri oluşturan yardımcı fonksiyon
-    function generateAllHours() {
-        var allHours = [];
-
-        for (let hour = 8; hour <= 17; hour++) {
-            for (let minute = 0; minute < 60; minute += 10) {
-                const formattedHour = hour.toString().padStart(2, '0');
-                const formattedMinute = minute.toString().padStart(2, '0');
-                const optionText = `${formattedHour}:${formattedMinute}`;
-
-                // 12:00 ile 13:30 arasındaki saatleri ekleme
-                if (formattedHour !== '12' || (formattedHour === '12' && formattedMinute === '00') ||
-                    (formattedHour === '13' && formattedMinute === '30')) {
-                    allHours.push(optionText);
+                    $.each(ilceler, function (index, ilce) {
+                        ilceDropdown.append('<option value="' + ilce.IlceId + '">' + ilce.IlceIsmi + '</option>');
+                    });
                 }
-            }
-        }
-
-        return allHours;
-    }
-    function formatDate(date) {
-        var day = date.getDate();
-        var month = date.getMonth() + 1;
-        var year = date.getFullYear();
-
-        if (day < 10) {
-            day = '0' + day;
-        }
-
-        if (month < 10) {
-            month = '0' + month;
-        }
-
-        return year + '-' + month + '-' + day;
-    }
+            });
+        });
+    });
 </script>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
