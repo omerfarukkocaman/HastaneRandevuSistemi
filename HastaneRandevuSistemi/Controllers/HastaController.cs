@@ -47,7 +47,7 @@ namespace HastaneRandevuSistemi.Controllers
         }
 
         // GET: Hasta/Create
-        public IActionResult Create()
+        public IActionResult KayitOl()
         {
             return View();
         }

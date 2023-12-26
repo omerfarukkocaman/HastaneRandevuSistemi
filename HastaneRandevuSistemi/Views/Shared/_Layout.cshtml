@@ -36,11 +36,17 @@
                                 <a class="btn btn-primary nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="Giris">Giriş Yap</a>
                             </li>
                         }
-                        else
+                        else if (HttpContextAccessor.HttpContext.Session.GetString("UserRole")=="Hasta")
                         {
                             <li class="nav-item">
                                 <a class="btn btn-primary nav-link text-dark me-2" asp-area="" asp-controller="Randevu" asp-action="RandevuAl">Randevu Al</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="btn btn-danger nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="CikisYap">Çıkış Yap</a>
+                            </li>
+                        }
+                        else
+                        {
                             <li class="nav-item">
                                 <a class="btn btn-danger nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="CikisYap">Çıkış Yap</a>
                             </li>

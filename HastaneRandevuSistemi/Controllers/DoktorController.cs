@@ -164,24 +164,24 @@ namespace HastaneRandevuSistemi.Controllers
         {
             return View();
         }
-        public IActionResult GirisYap(Hasta hasta)
+        public IActionResult GirisYap(Doktor doktor)
         {
-            foreach (var user in _context.Hasta)
+            foreach (var user in _context.Doktor)
             {
-                if (user.KimlikNo == hasta.KimlikNo && user.Sifre == hasta.Sifre)
+                if (user.Id == doktor.Id && user.Sifre == doktor.Sifre)
                 {
-                    HttpContext.Session.SetString("SessionUser", hasta.KimlikNo);
+                    HttpContext.Session.SetString("SessionUser", doktor.Sifre);
                     var cookieOpt = new CookieOptions
                     {
                         Expires = DateTime.Now.AddMinutes(20)
                     };
-                    HttpContext.Response.Cookies.Append("CookieTC", user.KimlikNo, cookieOpt);
+                    HttpContext.Response.Cookies.Append("CookieID", user.odaNo, cookieOpt);
                     HttpContext.Session.SetString("UserRole", "Doktor");
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index","Home");
                 }
             }
             TempData["hata"] = "Kullanıcı adı veya şifre hatalı";
-            return RedirectToAction("Index");
+            return RedirectToAction("DoktorGiris");
         }
     }
 }
