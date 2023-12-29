@@ -3,14 +3,7 @@
 @{
     ViewData["Title"] = "Edit";
 }
-@inject IHttpContextAccessor HttpContextAccessor
-@if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") != "Admin")
-{
-    <script>
-        // JavaScript kullanarak otomatik yönlendirme
-        window.location.href = '@Url.Action("Index", "Home")';
-    </script>
-}
+
 <h1>Edit</h1>
 
 <h4>Hasta</h4>

@@ -49,6 +49,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu/Create
         public IActionResult RandevuAl()
         {
+            if (HttpContext.Session.GetString("UserRole") != "Hasta")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             //int hastaid= HttpContext.Session.GetInt32("SessionId").GetValueOrDefault();
             //ViewData["HastaId"] = hastaid;
             ViewData["SehirId"] = new SelectList(_context.Sehir, "Id", "SehirIsmi");
@@ -73,6 +77,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Randevu == null)
             {
                 return NotFound();
@@ -95,6 +103,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,HastaId,RandevuTarihi,DoktorId")] Randevu randevu)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id != randevu.Id)
             {
                 return NotFound();
@@ -183,7 +195,26 @@ namespace HastaneRandevuSistemi.Controllers
         public IActionResult GetIlceler(int sehirId)
         {
             var ilceler = _context.Ilce.Where(ilce => ilce.SehirId == sehirId).ToList();
+            Console.WriteLine(ilceler);
             return Json(ilceler);
+        }
+        public IActionResult GetHastaneler(int ilceId)
+        {
+            var hastaneler = _context.Hastane.Where(hastane => hastane.IlceId == ilceId).ToList();
+            Console.WriteLine(hastaneler);
+            return Json(hastaneler);
+        }
+        public IActionResult GetPoliklinikler(int hastaneId)
+        {
+            var poliklinikler = _context.Poliklinik.Where(poliklinik => poliklinik.Id == hastaneId).ToList();
+            Console.WriteLine(poliklinikler);
+            return Json(poliklinikler);
+        }
+        public IActionResult GetDoktorlar(int poliklinikId)
+        {
+            var poliklinikler = _context.Poliklinik.Where(poliklinik => poliklinik.Id == poliklinikId).ToList();
+            Console.WriteLine(poliklinikler);
+            return Json(poliklinikler);
         }
     }
 }

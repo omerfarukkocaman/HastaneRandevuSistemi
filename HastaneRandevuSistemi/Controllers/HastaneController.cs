@@ -22,6 +22,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Hastane
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var hastaneRandevuSistemiContext = _context.Hastane.Include(h => h.ilce);
             return View(await hastaneRandevuSistemiContext.ToListAsync());
         }
@@ -29,6 +33,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Hastane/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Hastane == null)
             {
                 return NotFound();
@@ -48,6 +56,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Hastane/Create
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "Id");
             return View();
         }
@@ -59,6 +71,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,HastaneIsmi,IlceId")] Hastane hastane)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(hastane);
@@ -72,6 +88,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Hastane/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Hastane == null)
             {
                 return NotFound();
@@ -93,6 +113,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,HastaneIsmi,IlceId")] Hastane hastane)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id != hastane.Id)
             {
                 return NotFound();
@@ -125,6 +149,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Hastane/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Hastane == null)
             {
                 return NotFound();
@@ -146,6 +174,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (_context.Hastane == null)
             {
                 return Problem("Entity set 'HastaneRandevuSistemiContext.Hastane'  is null.");

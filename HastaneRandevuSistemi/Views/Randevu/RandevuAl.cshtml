@@ -15,6 +15,21 @@
                 <select id="ilceDropdown" name="ilce" class="form-control">
                 </select>
             </div>
+            <div class="form-group">
+                <label for="hastane">Hastane:</label>
+                <select id="hastaneDropdown" name="hastane" class="form-control">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="poliklinik">Poliklinik:</label>
+                <select id="poliklinikDropdown" name="poliklinik" class="form-control">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="hastane">Hastane:</label>
+                <select id="hastaneDropdown" name="hastane" class="form-control">
+                </select>
+            </div>
         </form>
     </div>
 </div>
@@ -27,17 +42,73 @@
         $("#sehirDropdown").change(function () {
             var sehirId = $(this).val();
 
-            // Seçilen şehir üzerinden ilçeleri getir
             $.ajax({
                 type: "GET",
                 url: "/Randevu/GetIlceler",
-                data: { sehirId: sehirId }, // Şehir ID'sini data olarak ekleyin
+                data: { sehirId: sehirId }, 
                 success: function (ilceler) {
                     var ilceDropdown = $("#ilceDropdown");
                     ilceDropdown.prop("disabled", false).empty();
-
                     $.each(ilceler, function (index, ilce) {
-                        ilceDropdown.append('<option value="' + ilce.Id + '">' + ilce.IlceIsmi + '</option>');
+                        ilceDropdown.append('<option value="' + ilce.id + '">' + ilce.ilceIsmi + '</option>');
+
+                    });
+                }
+            });
+        });
+    });
+    $(document).ready(function () {
+        $("#ilceDropdown").change(function () {
+            var ilceId = $(this).val();
+
+            $.ajax({
+                type: "GET",
+                url: "/Randevu/GetHastaneler",
+                data: { ilceId: ilceId }, 
+                success: function (hastaneler) {
+                    var hastaneDropdown = $("#hastaneDropdown");
+                    hastaneDropdown.prop("disabled", false).empty();
+                    $.each(hastaneler, function (index, hastane) {
+                        hastaneDropdown.append('<option value="' + hastane.id + '">' + hastane.hastaneIsmi + '</option>');
+
+                    });
+                }
+            });
+        });
+    });
+    $(document).ready(function () {
+        $("#hastaneDropdown").change(function () {
+            var hastaneId = $(this).val();
+
+            $.ajax({
+                type: "GET",
+                url: "/Randevu/GetPoliklinikler",
+                data: { hastaneId: hastaneId }, 
+                success: function (poliklinikler) {
+                    var poliklinikDropdown = $("#poliklinikDropdown");
+                    poliklinikDropdown.prop("disabled", false).empty();
+                    $.each(poliklinikler, function (index, poliklinik) {
+                        poliklinikDropdown.append('<option value="' + poliklinik.id + '">' + poliklinik.poliklinikIsmi + '</option>');
+
+                    });
+                }
+            });
+        });
+    });
+    $(document).ready(function () {
+        $("#poliklinikDropdown").change(function () {
+            var poliklinikId = $(this).val();
+
+            $.ajax({
+                type: "GET",
+                url: "/Randevu/GetHastaneler",
+                data: { poliklinikId: poliklinikId },
+                success: function (doktorlar) {
+                    var doktorDropdown = $("#doktorDropdown");
+                    doktorDropdown.prop("disabled", false).empty();
+                    $.each(doktorlar, function (index, doktor) {
+                        doktorDropdown.append('<option value="' + doktor.id + '">' + doktor.hastaneIsmi + '</option>');
+
                     });
                 }
             });

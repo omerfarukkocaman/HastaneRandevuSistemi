@@ -3,15 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
-@inject IHttpContextAccessor HttpContextAccessor
 
-@if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") != "Admin")
-{
-    <script>
-        // JavaScript kullanarak otomatik yönlendirme
-        window.location.href = '@Url.Action("Index", "Home")';
-    </script>
-}
 <h1>Index</h1>
 
 <p>
@@ -33,23 +25,28 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Isim)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.KimlikNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DogumTarihi)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model) 
+        {
+            @inject IHttpContextAccessor HttpContextAccessor
+            @if (item.KimlikNo == HttpContextAccessor.HttpContext.Session.GetString("SessionUser"))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Isim)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.KimlikNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DogumTarihi)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }   
     </tbody>
 </table>

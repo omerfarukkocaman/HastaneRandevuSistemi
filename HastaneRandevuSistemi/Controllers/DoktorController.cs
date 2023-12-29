@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HastaneRandevuSistemi.Controllers
 {
-    public class DoktorController : Controller
+public class DoktorController : Controller
     {
         private readonly HastaneRandevuSistemiContext _context;
 
@@ -23,7 +23,11 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Doktor
         public async Task<IActionResult> Index()
         {
-              return _context.Doktor != null ? 
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index","Home");
+            }
+            return _context.Doktor != null ? 
                           View(await _context.Doktor.ToListAsync()) :
                           Problem("Entity set 'HastaneRandevuSistemiContext.Doktor'  is null.");
         }
@@ -31,6 +35,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Doktor/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Doktor == null)
             {
                 return NotFound();
@@ -49,6 +57,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Doktor/Create
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -59,6 +71,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Isim,odaNo,Sifre")] Doktor doktor)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(doktor);
@@ -71,6 +87,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Doktor/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Doktor == null)
             {
                 return NotFound();
@@ -91,6 +111,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Isim,odaNo,Sifre")] Doktor doktor)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id != doktor.Id)
             {
                 return NotFound();
@@ -122,6 +146,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Doktor/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Doktor == null)
             {
                 return NotFound();
@@ -142,6 +170,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (_context.Doktor == null)
             {
                 return Problem("Entity set 'HastaneRandevuSistemiContext.Doktor'  is null.");
@@ -158,6 +190,7 @@ namespace HastaneRandevuSistemi.Controllers
 
         private bool DoktorExists(int id)
         {
+
           return (_context.Doktor?.Any(e => e.Id == id)).GetValueOrDefault();
         }
         public IActionResult DoktorGiris()

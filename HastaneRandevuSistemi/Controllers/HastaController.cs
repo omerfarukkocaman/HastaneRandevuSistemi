@@ -135,6 +135,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Hasta/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Hasta == null)
             {
                 return NotFound();
@@ -155,6 +159,10 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (_context.Hasta == null)
             {
                 return Problem("Entity set 'HastaneRandevuSistemiContext.Hasta'  is null.");
@@ -194,7 +202,7 @@ namespace HastaneRandevuSistemi.Controllers
                     };
                     HttpContext.Response.Cookies.Append("CookieTC",user.KimlikNo,cookieOpt);
                     HttpContext.Session.SetString("UserRole", "Hasta");
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index","Home");
                 }
                 
             }
@@ -204,7 +212,7 @@ namespace HastaneRandevuSistemi.Controllers
         public IActionResult CikisYap()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
 
     }

@@ -3,14 +3,7 @@
 @{
     ViewData["Title"] = "Delete";
 }
-@inject IHttpContextAccessor HttpContextAccessor
-@if (HttpContextAccessor.HttpContext.Session.GetString("UserRole") != "Admin")
-{
-    <script>
-        // JavaScript kullanarak otomatik yönlendirme
-        window.location.href = '@Url.Action("Index", "Home")';
-    </script>
-}
+
 <h1>Delete</h1>
 
 <h3>Are you sure you want to delete this?</h3>
