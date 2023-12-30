@@ -195,7 +195,7 @@ namespace HastaneRandevuSistemi.Controllers
                 if(user.KimlikNo==hasta.KimlikNo && user.Sifre==hasta.Sifre)
                 {
                     HttpContext.Session.SetString("SessionUser", hasta.KimlikNo);
-                    HttpContext.Session.SetInt32("SessionId", hasta.Id);
+                    HttpContext.Session.SetInt32("SessionId", user.Id);
                     var cookieOpt = new CookieOptions
                     {
                         Expires = DateTime.Now.AddMinutes(20)

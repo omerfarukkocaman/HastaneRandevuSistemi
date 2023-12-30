@@ -26,9 +26,23 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="hastane">Hastane:</label>
-                <select id="hastaneDropdown" name="hastane" class="form-control">
+                <label for="doktor">Doktor:</label>
+                <select id="doktorDropdown" name="doktor" class="form-control">
                 </select>
+            </div>
+            <br />
+            <div class="form-group">
+            <label asp-for="RandevuTarihi.Date">Tarih:</label>
+            <input asp-for="RandevuTarihi.Date" type="date" id="tarih" name="tarih" required onchange="getAvailableAppointments()">
+            </div>
+            <br />
+            <div class="form-group">
+            <label asp-for="RandevuTarihi.Hour">Saat:</label>
+            <select asp-for="RandevuTarihi.Hour" id="saat" name="saat" required></select>
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="button" onclick="submitForm()">Randevu Oluştur</button>
             </div>
         </form>
     </div>
@@ -38,8 +52,21 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <script>
+    
     $(document).ready(function () {
+        $("#sehirDropdown").append('<option value="" selected="selected">- Seçiniz -</option>');
+        $("#ilceDropdown").prop("disabled", true);
+        $("#hastaneDropdown").prop("disabled", true);
+        $("#poliklinikDropdown").prop("disabled", true);
+        $("#doktorDropdown").prop("disabled", true);
+        $("#tarih").prop("disabled", true);
+        $("#saat").prop("disabled", true);
         $("#sehirDropdown").change(function () {
+            $("#hastaneDropdown").val("").prop("disabled", true);
+            $("#poliklinikDropdown").val("").prop("disabled", true);
+            $("#doktorDropdown").val("").prop("disabled", true);
+            $("#tarih").val("").prop("disabled", true);
+            $("#saat").val("").prop("disabled", true);
             var sehirId = $(this).val();
 
             $.ajax({
@@ -48,7 +75,8 @@
                 data: { sehirId: sehirId }, 
                 success: function (ilceler) {
                     var ilceDropdown = $("#ilceDropdown");
-                    ilceDropdown.prop("disabled", false).empty();
+                    ilceDropdown.val("").prop("disabled", false).empty();
+                    ilceDropdown.append('<option value="">- Seçiniz -</option>');
                     $.each(ilceler, function (index, ilce) {
                         ilceDropdown.append('<option value="' + ilce.id + '">' + ilce.ilceIsmi + '</option>');
 
@@ -56,9 +84,12 @@
                 }
             });
         });
-    });
-    $(document).ready(function () {
+
         $("#ilceDropdown").change(function () {
+            $("#poliklinikDropdown").val("").prop("disabled", true);
+            $("#doktorDropdown").val("").prop("disabled", true);
+            $("#tarih").val("").prop("disabled", true);
+            $("#saat").val("").prop("disabled", true);
             var ilceId = $(this).val();
 
             $.ajax({
@@ -67,7 +98,8 @@
                 data: { ilceId: ilceId }, 
                 success: function (hastaneler) {
                     var hastaneDropdown = $("#hastaneDropdown");
-                    hastaneDropdown.prop("disabled", false).empty();
+                    hastaneDropdown.val("").prop("disabled", false).empty();
+                    hastaneDropdown.append('<option value="">- Seçiniz -</option>');
                     $.each(hastaneler, function (index, hastane) {
                         hastaneDropdown.append('<option value="' + hastane.id + '">' + hastane.hastaneIsmi + '</option>');
 
@@ -75,9 +107,11 @@
                 }
             });
         });
-    });
-    $(document).ready(function () {
+   
         $("#hastaneDropdown").change(function () {
+            $("#doktorDropdown").val("").prop("disabled", true);
+            $("#tarih").val("").prop("disabled", true);
+            $("#saat").val("").prop("disabled", true);
             var hastaneId = $(this).val();
 
             $.ajax({
@@ -86,7 +120,8 @@
                 data: { hastaneId: hastaneId }, 
                 success: function (poliklinikler) {
                     var poliklinikDropdown = $("#poliklinikDropdown");
-                    poliklinikDropdown.prop("disabled", false).empty();
+                    poliklinikDropdown.val("").prop("disabled", false).empty();
+                    poliklinikDropdown.append('<option value="">- Seçiniz -</option>');
                     $.each(poliklinikler, function (index, poliklinik) {
                         poliklinikDropdown.append('<option value="' + poliklinik.id + '">' + poliklinik.poliklinikIsmi + '</option>');
 
@@ -94,26 +129,131 @@
                 }
             });
         });
-    });
-    $(document).ready(function () {
+
         $("#poliklinikDropdown").change(function () {
+            $("#tarih").val("").prop("disabled", true);
+            $("#saat").val("").prop("disabled", true);
             var poliklinikId = $(this).val();
 
             $.ajax({
                 type: "GET",
-                url: "/Randevu/GetHastaneler",
+                url: "/Randevu/GetDoktorlar",
                 data: { poliklinikId: poliklinikId },
                 success: function (doktorlar) {
                     var doktorDropdown = $("#doktorDropdown");
-                    doktorDropdown.prop("disabled", false).empty();
+                    doktorDropdown.val("").prop("disabled", false).empty();
+                    doktorDropdown.append('<option value="">- Seçiniz -</option>');
                     $.each(doktorlar, function (index, doktor) {
-                        doktorDropdown.append('<option value="' + doktor.id + '">' + doktor.hastaneIsmi + '</option>');
+                        doktorDropdown.append('<option value="' + doktor.id + '">' + doktor.isim + '</option>');
 
                     });
                 }
             });
         });
+
+        $("#doktorDropdown").change(function () {
+            $("#saat").val("").prop("disabled", true);
+            $("#tarih").val("").prop("disabled", false).empty();
+            
+        });
+
     });
+    var minDate = new Date();
+    var maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 15);
+    document.getElementById("tarih").setAttribute("min", formatDate(minDate));
+    document.getElementById("tarih").setAttribute("max", formatDate(maxDate));
+
+    function getAvailableAppointments() {
+        var selectedDate = document.getElementById("tarih").value;
+        var doktorId = document.getElementById("doktorDropdown").value;
+        // AJAX ile server tarafına sorgu gönderme
+        $.ajax({
+            type: "GET",
+            url: "/Randevu/DoluSaatler",
+            data: { selectedDate: selectedDate, doktorId: doktorId },
+            success: function (reservedHours) {
+                var allHours = generateAllHours();
+                // Alınmış saatleri çıkart
+                reservedHours.forEach(function (hour) {
+                    const formattedHour = hour.hour.toString().padStart(2, '0');
+                    const formattedMinute = hour.minute.toString().padStart(2, '0');
+                    const optionText = `${formattedHour}:${formattedMinute}`;
+                    allHours = allHours.filter(function (availableHour) {
+                        return availableHour !== optionText;
+                    });
+                });
+                $("#saat").prop("disabled", false);
+
+                // Saatleri HTML içerisine ekle
+                var selectSaat = document.getElementById("saat");
+                selectSaat.innerHTML = "";
+
+                allHours.forEach(function (hour) {
+                    var option = document.createElement("option");
+                    option.text = hour;
+                    option.value = hour;
+                    selectSaat.add(option);
+                });
+            }
+        });
+    }
+
+    // Tüm saatleri oluşturan yardımcı fonksiyon
+    function generateAllHours() {
+        var allHours = [];
+
+        for (let hour = 8; hour <= 17; hour++) {
+            for (let minute = 0; minute < 60; minute += 10) {
+                const formattedHour = hour.toString().padStart(2, '0');
+                const formattedMinute = minute.toString().padStart(2, '0');
+                const optionText = `${formattedHour}:${formattedMinute}`;
+
+                // 12:00 ile 13:30 arasındaki saatleri ekleme
+                if (formattedHour !== '12' || (formattedHour === '12' && formattedMinute === '00') ||
+                    (formattedHour === '13' && formattedMinute === '30')) {
+                    allHours.push(optionText);
+                }
+            }
+        }
+
+        return allHours;
+    }
+
+    function formatDate(date) {
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (day < 10) {
+            day = '0' + day;
+        }
+
+        if (month < 10) {
+            month = '0' + month;
+        }
+
+        return year + '-' + month + '-' + day;
+    }
+    function submitForm() {
+        var doktorId = $("#doktorDropdown").val();
+        var date = $("#tarih").val();
+        var hour = $("#saat").val();
+        console.log(doktorId);
+        console.log(hour);
+        console.log(date);
+        $.ajax({
+            type: "POST",
+            url: "/Randevu/RandevuOlustur",
+            data: { doktorId: doktorId, date: date, hour: hour },
+            success: function (response) {
+                // Başarılı bir şekilde tamamlandığında yapılacak işlemler
+            },
+            error: function (error) {
+                // Hata durumunda yapılacak işlemler
+            }
+        });
+    }
 </script>
 @section Scripts {
     @{

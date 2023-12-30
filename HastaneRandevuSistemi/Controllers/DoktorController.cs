@@ -195,6 +195,7 @@ public class DoktorController : Controller
         }
         public IActionResult DoktorGiris()
         {
+         
             return View();
         }
         public IActionResult GirisYap(Doktor doktor)
@@ -203,7 +204,7 @@ public class DoktorController : Controller
             {
                 if (user.Id == doktor.Id && user.Sifre == doktor.Sifre)
                 {
-                    HttpContext.Session.SetString("SessionUser", doktor.Sifre);
+                    HttpContext.Session.SetString("SessionUser", doktor.odaNo);
                     var cookieOpt = new CookieOptions
                     {
                         Expires = DateTime.Now.AddMinutes(20)

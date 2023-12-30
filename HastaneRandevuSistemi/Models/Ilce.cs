@@ -8,7 +8,7 @@ namespace HastaneRandevuSistemi.Models
         [Key]
         public int Id { get; set; }
         public string IlceIsmi { get; set; }
-        [ForeignKey("hastane")]
+        [ForeignKey("sehir")]
         public int SehirId { get; set; }
         public Sehir sehir { get; set; }
         public List<Hastane>? hastaneler { get; set; }

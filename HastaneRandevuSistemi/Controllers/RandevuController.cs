@@ -55,6 +55,7 @@ namespace HastaneRandevuSistemi.Controllers
             }
             //int hastaid= HttpContext.Session.GetInt32("SessionId").GetValueOrDefault();
             //ViewData["HastaId"] = hastaid;
+            
             ViewData["SehirId"] = new SelectList(_context.Sehir, "Id", "SehirIsmi");
             return View();
         }
@@ -63,16 +64,27 @@ namespace HastaneRandevuSistemi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RandevuAl([Bind("Id,HastaId,RandevuTarihi.Date,RandevuTarihi.Hour,DoktorId")] Randevu randevu)
+        public async Task<IActionResult> RandevuOlustur(string doktorId, string date, string hour)
         {
-             _context.Add(randevu);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            //ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
-            //ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
-            //return View(randevu);
+            int HastaId = HttpContext.Session.GetInt32("SessionId").GetValueOrDefault();
+            DateTime randevuTarihi = DateTime.Parse(date + " " + hour);
+            int DoktorId = int.Parse(doktorId);
+            if (_context.Randevu.Any(r => r.HastaId == HastaId && r.RandevuTarihi>DateTime.Now))
+                return RedirectToAction("Index", "Home");
+            var randevu=new Randevu { DoktorId=DoktorId, HastaId=HastaId, RandevuTarihi=randevuTarihi };
+            _context.Add(randevu);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Home");
         }
+        //public async Task<IActionResult> RandevuAl(string doktorId, string date, string hour)
+        //{
+        //     _context.Add(randevu);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    //ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
+        //    //ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
+        //    //return View(randevu);
+        //}
 
         // GET: Randevu/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -181,15 +193,17 @@ namespace HastaneRandevuSistemi.Controllers
           return (_context.Randevu?.Any(e => e.Id == id)).GetValueOrDefault();
         }
         [HttpGet]
-        public IActionResult DoluSaatler(DateTime selectedDate)
+        public IActionResult DoluSaatler(string selectedDate, string doktorId)
         {
+            DateTime parsedDate = DateTime.Parse(selectedDate);
+            int DoktorId = int.Parse(doktorId);
             // Belirli bir tarihe ait uygun randevu saatlerini çekme
-            var dolusaatler = _context.Randevu
-                .Where(r => r.RandevuTarihi.Date == selectedDate.Date)
-                .Select(r => r.RandevuTarihi.Hour)
+            var reservedHours = _context.Randevu
+                .Where(r => r.RandevuTarihi.Date == parsedDate.Date && r.DoktorId == DoktorId)
+                .Select(r => new { Hour = r.RandevuTarihi.Hour, Minute = r.RandevuTarihi.Minute })
                 .ToList();
-
-            return Json(dolusaatler);
+            return Json(reservedHours);
+            
         }
         [HttpGet]
         public IActionResult GetIlceler(int sehirId)
@@ -206,15 +220,15 @@ namespace HastaneRandevuSistemi.Controllers
         }
         public IActionResult GetPoliklinikler(int hastaneId)
         {
-            var poliklinikler = _context.Poliklinik.Where(poliklinik => poliklinik.Id == hastaneId).ToList();
+            var poliklinikler = _context.Poliklinik.Where(poliklinik => poliklinik.HastaneId == hastaneId).ToList();
             Console.WriteLine(poliklinikler);
             return Json(poliklinikler);
         }
         public IActionResult GetDoktorlar(int poliklinikId)
         {
-            var poliklinikler = _context.Poliklinik.Where(poliklinik => poliklinik.Id == poliklinikId).ToList();
-            Console.WriteLine(poliklinikler);
-            return Json(poliklinikler);
+            var doktorlar = _context.Doktor.Where(doktor => doktor.poliklinikId == poliklinikId).ToList();
+            Console.WriteLine(doktorlar);
+            return Json(doktorlar);
         }
     }
 }

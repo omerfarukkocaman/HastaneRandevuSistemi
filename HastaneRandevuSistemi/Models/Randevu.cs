@@ -14,7 +14,7 @@ namespace HastaneRandevuSistemi.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("hasta")]
+        [ForeignKey("Hasta")]
         public int HastaId { get; set; }
         public Hasta Hasta { get; set; }
 
