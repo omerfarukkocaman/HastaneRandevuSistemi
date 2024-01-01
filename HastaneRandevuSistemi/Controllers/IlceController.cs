@@ -48,7 +48,7 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Ilce/Create
         public IActionResult Create()
         {
-            ViewData["SehirId"] = new SelectList(_context.Sehir, "Id", "Id");
+            ViewData["SehirId"] = new SelectList(_context.Sehir, "Id", "SehirIsmi");
             return View();
         }
 

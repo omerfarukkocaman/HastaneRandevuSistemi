@@ -48,9 +48,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 <script>
     
     $(document).ready(function () {
@@ -167,14 +164,12 @@
     function getAvailableAppointments() {
         var selectedDate = document.getElementById("tarih").value;
         var doktorId = document.getElementById("doktorDropdown").value;
-        // AJAX ile server tarafına sorgu gönderme
         $.ajax({
             type: "GET",
             url: "/Randevu/DoluSaatler",
             data: { selectedDate: selectedDate, doktorId: doktorId },
             success: function (reservedHours) {
                 var allHours = generateAllHours();
-                // Alınmış saatleri çıkart
                 reservedHours.forEach(function (hour) {
                     const formattedHour = hour.hour.toString().padStart(2, '0');
                     const formattedMinute = hour.minute.toString().padStart(2, '0');
@@ -184,8 +179,6 @@
                     });
                 });
                 $("#saat").prop("disabled", false);
-
-                // Saatleri HTML içerisine ekle
                 var selectSaat = document.getElementById("saat");
                 selectSaat.innerHTML = "";
                 
@@ -199,7 +192,6 @@
         });
     }
 
-    // Tüm saatleri oluşturan yardımcı fonksiyon
     function generateAllHours() {
         var allHours = [];
         allHours.push("- Seçiniz -");
@@ -208,8 +200,6 @@
                 const formattedHour = hour.toString().padStart(2, '0');
                 const formattedMinute = minute.toString().padStart(2, '0');
                 const optionText = `${formattedHour}:${formattedMinute}`;
-
-                // 12:00 ile 13:30 arasındaki saatleri ekleme
                 if (formattedHour !== '12' || (formattedHour === '12' && formattedMinute === '00') ||
                     (formattedHour === '13' && formattedMinute === '30')) {
                     allHours.push(optionText);
@@ -245,13 +235,10 @@
             url: "/Randevu/RandevuOlustur",
             data: { doktorId: doktorId, date: date, hour: hour },
             success: function (response) {
-                // Başarılı bir şekilde tamamlandığında yapılacak işlemler
                 alert("Randevu başarıyla oluşturuldu.");
-                // veya başka bir işlem yapabilirsiniz, örneğin sayfayı yenileyebilirsiniz
                 window.location.reload();
             },
             error: function (error) {
-                // Hata durumunda yapılacak işlemler
                 alert("Randevu oluşturulamadı. Hata: " + error.responseJSON.message);
                 window.location.reload();
 

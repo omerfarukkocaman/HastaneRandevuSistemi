@@ -61,8 +61,6 @@ namespace HastaneRandevuSistemi.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            //int hastaid= HttpContext.Session.GetInt32("SessionId").GetValueOrDefault();
-            //ViewData["HastaId"] = hastaid;
             
             ViewData["SehirId"] = new SelectList(_context.Sehir, "Id", "SehirIsmi");
             return View();
@@ -88,15 +86,7 @@ namespace HastaneRandevuSistemi.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Randevu başarıyla oluşturuldu." });
         }
-        //public async Task<IActionResult> RandevuAl(string doktorId, string date, string hour)
-        //{
-        //     _context.Add(randevu);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    //ViewData["HastaId"] = new SelectList(_context.Hasta, "Id", "Isim", randevu.HastaId);
-        //    //ViewData["DoktorId"] = new SelectList(_context.Doktor, "Id", "Isim", randevu.DoktorId);
-        //    //return View(randevu);
-        //}
+       
 
         // GET: Randevu/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -245,25 +235,21 @@ namespace HastaneRandevuSistemi.Controllers
         public IActionResult GetIlceler(int sehirId)
         {
             var ilceler = _context.Ilce.Where(ilce => ilce.SehirId == sehirId).ToList();
-            Console.WriteLine(ilceler);
             return Json(ilceler);
         }
         public IActionResult GetHastaneler(int ilceId)
         {
             var hastaneler = _context.Hastane.Where(hastane => hastane.IlceId == ilceId).ToList();
-            Console.WriteLine(hastaneler);
             return Json(hastaneler);
         }
         public IActionResult GetPoliklinikler(int hastaneId)
         {
             var poliklinikler = _context.Poliklinik.Where(poliklinik => poliklinik.HastaneId == hastaneId).ToList();
-            Console.WriteLine(poliklinikler);
             return Json(poliklinikler);
         }
         public IActionResult GetDoktorlar(int poliklinikId)
         {
             var doktorlar = _context.Doktor.Where(doktor => doktor.poliklinikId == poliklinikId).ToList();
-            Console.WriteLine(doktorlar);
             return Json(doktorlar);
         }
     }

@@ -63,7 +63,6 @@
                             </li>
 
                             <li class="nav-item">
-                                <!-- Profil menüsü -->
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @_localization.Getkey("Hesap").Value
@@ -72,7 +71,7 @@
                                         <a class="dropdown-item" asp-area="" asp-controller="Hasta" asp-action="Index">@_localization.Getkey("Detay").Value</a>
                                         <a class="dropdown-item" asp-area="" asp-controller="Hasta" asp-action="RandevuListesi">@_localization.Getkey("Randevu").Value</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Hasta" asp-action="CikisYap">@_localization.Getkey("Logout").Value</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Hasta" asp-action="CikisYap">@_localization.Getkey("Cikis Yap").Value</a>
                                     </div>
                                 </div>
                             </li>
@@ -80,7 +79,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-danger nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="CikisYap">@_localization.Getkey("Logout").Value</a>
+                                <a class="btn btn-danger nav-link text-dark" asp-area="" asp-controller="Hasta" asp-action="CikisYap">@_localization.Getkey("Cikis Yap").Value</a>
                             </li>
                         }
                         
