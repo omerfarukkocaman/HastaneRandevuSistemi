@@ -75,14 +75,10 @@ namespace HastaneRandevuSistemi.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (ModelState.IsValid)
-            {
-                _context.Add(poliklinik);
+           _context.Add(poliklinik);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["HastaneId"] = new SelectList(_context.Set<Hastane>(), "Id", "Id", poliklinik.HastaneId);
-            return View(poliklinik);
+           
         }
 
         // GET: Poliklinik/Edit/5

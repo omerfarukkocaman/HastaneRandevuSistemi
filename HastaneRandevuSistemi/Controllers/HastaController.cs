@@ -27,29 +27,20 @@ namespace HastaneRandevuSistemi.Controllers
                           View(await _context.Hasta.ToListAsync()) :
                           Problem("Entity set 'HastaneRandevuSistemiContext.Hasta'  is null.");
         }
-
-        // GET: Hasta/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Hasta == null)
-            {
-                return NotFound();
-            }
-
-            var hasta = await _context.Hasta
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (hasta == null)
-            {
-                return NotFound();
-            }
-
-            return View(hasta);
-        }
-
+        
         // GET: Hasta/Create
         public IActionResult KayitOl()
         {
             return View();
+        }
+        public async Task<IActionResult> RandevuListesi()
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Hasta")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var hastaneRandevuSistemiContext = _context.Randevu.Include(r => r.Hasta).Include(r => r.doktor);
+            return View(await hastaneRandevuSistemiContext.ToListAsync());
         }
 
         // POST: Hasta/Create
@@ -73,7 +64,7 @@ namespace HastaneRandevuSistemi.Controllers
                     }
                         _context.Add(hasta);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Home","Index");
                 }
                 return View(hasta);
             }
@@ -81,57 +72,7 @@ namespace HastaneRandevuSistemi.Controllers
                 return RedirectToAction("Index");
         }
 
-        // GET: Hasta/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Hasta == null)
-            {
-                return NotFound();
-            }
-
-            var hasta = await _context.Hasta.FindAsync(id);
-            if (hasta == null)
-            {
-                return NotFound();
-            }
-            return View(hasta);
-        }
-
-        // POST: Hasta/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Sifre,Isim,KimlikNo,DogumTarihi")] Hasta hasta)
-        {
-            if (id != hasta.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(hasta);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!HastaExists(hasta.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(hasta);
-        }
-
+       
         // GET: Hasta/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -174,7 +115,7 @@ namespace HastaneRandevuSistemi.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(HastaListesi));
         }
 
         private bool HastaExists(int id)
@@ -187,6 +128,16 @@ namespace HastaneRandevuSistemi.Controllers
                 return View();
             else
                 return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> HastaListesi()
+        {
+			if (HttpContext.Session.GetString("UserRole") != "Admin")
+			{
+				return RedirectToAction("Index", "Home");
+			}
+            return _context.Hasta != null ?
+                          View(await _context.Hasta.ToListAsync()) :
+                          Problem("Entity set 'HastaneRandevuSistemiContext.Hasta'  is null.");
         }
         public IActionResult GirisYap(Hasta hasta)
         {

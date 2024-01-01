@@ -60,7 +60,7 @@ namespace HastaneRandevuSistemi.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "Id");
+            ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "IlceIsmi");
             return View();
         }
 
@@ -75,14 +75,9 @@ namespace HastaneRandevuSistemi.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (ModelState.IsValid)
-            {
                 _context.Add(hastane);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "Id", hastane.IlceId);
-            return View(hastane);
         }
 
         // GET: Hastane/Edit/5
@@ -102,7 +97,7 @@ namespace HastaneRandevuSistemi.Controllers
             {
                 return NotFound();
             }
-            ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "Id", hastane.IlceId);
+            ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "IlceIsmi", hastane.IlceId);
             return View(hastane);
         }
 
@@ -142,7 +137,7 @@ namespace HastaneRandevuSistemi.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "Id", hastane.IlceId);
+            ViewData["IlceId"] = new SelectList(_context.Set<Ilce>(), "Id", "IlceIsmi", hastane.IlceId);
             return View(hastane);
         }
 

@@ -26,6 +26,7 @@ namespace HastaneRandevuSistemi.Models
         [ForeignKey("doktor")]
         [DisplayName("Doktor")]
         public int DoktorId { get; set; }
+        [DisplayName("Doktor")]
         public Doktor doktor { get; set; }
     }
 }

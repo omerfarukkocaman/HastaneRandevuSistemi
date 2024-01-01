@@ -1,0 +1,65 @@
+﻿@model IEnumerable<HastaneRandevuSistemi.Models.Randevu>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Randevu Listesi</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Hasta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RandevuTarihi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.doktor)
+            </th>
+            <th>
+                Randevu Durumu
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @inject IHttpContextAccessor HttpContextAccessor
+
+            @if (item.HastaId == HttpContextAccessor.HttpContext.Session.GetInt32("SessionId"))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Hasta.Isim)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RandevuTarihi)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.doktor.Isim)
+                    </td>
+                    @if (DateTime.Now > item.RandevuTarihi)
+                    {
+                        <td>
+                            Pasif
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            Aktif
+                        </td>
+                    }
+
+                    <td>
+                        <a asp-controller="Randevu" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

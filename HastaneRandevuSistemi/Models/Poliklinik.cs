@@ -18,6 +18,7 @@ namespace HastaneRandevuSistemi.Models
         [DisplayName("Poliklinik")]
         public string PoliklinikIsmi { get; set; }
         [ForeignKey("hastane")]
+        [DisplayName("Hastane")]
         public int HastaneId { get; set; }
         public Hastane hastane { get; set; }
 

@@ -22,6 +22,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var hastaneRandevuSistemiContext = _context.Randevu.Include(r => r.Hasta).Include(r => r.doktor);
             return View(await hastaneRandevuSistemiContext.ToListAsync());
         }
@@ -29,6 +33,10 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Randevu == null)
             {
                 return NotFound();
@@ -69,12 +77,16 @@ namespace HastaneRandevuSistemi.Controllers
             int HastaId = HttpContext.Session.GetInt32("SessionId").GetValueOrDefault();
             DateTime randevuTarihi = DateTime.Parse(date + " " + hour);
             int DoktorId = int.Parse(doktorId);
+            if (randevuTarihi < DateTime.Now)
+                return BadRequest(new { message = "Randevu tarihi geçersiz." });
             if (_context.Randevu.Any(r => r.HastaId == HastaId && r.RandevuTarihi>DateTime.Now))
-                return RedirectToAction("Index", "Home");
-            var randevu=new Randevu { DoktorId=DoktorId, HastaId=HastaId, RandevuTarihi=randevuTarihi };
+                return BadRequest(new { message = "Randevu oluşturma başarısız. Zaten randevunuz bulunmaktadır." });
+            var _doktor = await _context.Doktor.FindAsync(DoktorId);
+            var _hasta = await _context.Hasta.FindAsync(HastaId);
+            var randevu=new Randevu { DoktorId=DoktorId, HastaId=HastaId, RandevuTarihi=randevuTarihi, doktor = _doktor, Hasta=_hasta};
             _context.Add(randevu);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Home");
+            return Ok(new { message = "Randevu başarıyla oluşturuldu." });
         }
         //public async Task<IActionResult> RandevuAl(string doktorId, string date, string hour)
         //{
@@ -152,6 +164,11 @@ namespace HastaneRandevuSistemi.Controllers
         // GET: Randevu/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            var _randevu = _context.Randevu.Where(r => r.Id == id).FirstOrDefault();
+            if (HttpContext.Session.GetString("UserRole") != "Admin" && HttpContext.Session.GetInt32("SessionId") != _randevu.HastaId)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null || _context.Randevu == null)
             {
                 return NotFound();
@@ -174,6 +191,11 @@ namespace HastaneRandevuSistemi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var _randevu = _context.Randevu.Where(r => r.Id == id).FirstOrDefault();
+            if (HttpContext.Session.GetString("UserRole") != "Admin" && HttpContext.Session.GetInt32("SessionId") != _randevu.HastaId)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (_context.Randevu == null)
             {
                 return Problem("Entity set 'HastaneRandevuSistemiContext.Randevu'  is null.");
@@ -202,6 +224,20 @@ namespace HastaneRandevuSistemi.Controllers
                 .Where(r => r.RandevuTarihi.Date == parsedDate.Date && r.DoktorId == DoktorId)
                 .Select(r => new { Hour = r.RandevuTarihi.Hour, Minute = r.RandevuTarihi.Minute })
                 .ToList();
+
+            if (parsedDate.Date == DateTime.Today)
+            {
+                var currentDateTime = DateTime.Now;
+                var currentTime = currentDateTime.Hour;
+
+                for (int hour = 8; hour <= currentTime; hour++)
+                {
+                    for (int minute = 0; minute < 60; minute += 10)
+                    {
+                        reservedHours.Add(new { Hour = hour, Minute = minute });
+                    }
+                }
+            }
             return Json(reservedHours);
             
         }

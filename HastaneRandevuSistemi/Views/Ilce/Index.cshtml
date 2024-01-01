@@ -1,0 +1,41 @@
+﻿@model IEnumerable<HastaneRandevuSistemi.Models.Ilce>
+
+@{
+    ViewData["Title"] = "Index";
+}
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IlceIsmi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.sehir)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IlceIsmi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.sehir.Id)
+            </td>
+            <td>
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -188,7 +188,7 @@
                 // Saatleri HTML içerisine ekle
                 var selectSaat = document.getElementById("saat");
                 selectSaat.innerHTML = "";
-
+                
                 allHours.forEach(function (hour) {
                     var option = document.createElement("option");
                     option.text = hour;
@@ -202,8 +202,8 @@
     // Tüm saatleri oluşturan yardımcı fonksiyon
     function generateAllHours() {
         var allHours = [];
-
-        for (let hour = 8; hour <= 17; hour++) {
+        allHours.push("- Seçiniz -");
+        for (let hour = 8; hour <= 16; hour++) {
             for (let minute = 0; minute < 60; minute += 10) {
                 const formattedHour = hour.toString().padStart(2, '0');
                 const formattedMinute = minute.toString().padStart(2, '0');
@@ -239,18 +239,22 @@
         var doktorId = $("#doktorDropdown").val();
         var date = $("#tarih").val();
         var hour = $("#saat").val();
-        console.log(doktorId);
-        console.log(hour);
-        console.log(date);
+
         $.ajax({
             type: "POST",
             url: "/Randevu/RandevuOlustur",
             data: { doktorId: doktorId, date: date, hour: hour },
             success: function (response) {
                 // Başarılı bir şekilde tamamlandığında yapılacak işlemler
+                alert("Randevu başarıyla oluşturuldu.");
+                // veya başka bir işlem yapabilirsiniz, örneğin sayfayı yenileyebilirsiniz
+                window.location.reload();
             },
             error: function (error) {
                 // Hata durumunda yapılacak işlemler
+                alert("Randevu oluşturulamadı. Hata: " + error.responseJSON.message);
+                window.location.reload();
+
             }
         });
     }

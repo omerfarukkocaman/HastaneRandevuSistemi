@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HastaneRandevuSistemi.Controllers
 {
-public class DoktorController : Controller
+    public class DoktorController : Controller
     {
         private readonly HastaneRandevuSistemiContext _context;
 
@@ -61,6 +61,7 @@ public class DoktorController : Controller
             {
                 return RedirectToAction("Index", "Home");
             }
+            ViewData["poliklinikId"] = new SelectList(_context.Set<Poliklinik>(), "Id", "PoliklinikIsmi");
             return View();
         }
 
@@ -69,19 +70,16 @@ public class DoktorController : Controller
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Isim,odaNo,Sifre")] Doktor doktor)
+        public async Task<IActionResult> Create([Bind("Id,Isim,odaNo,poliklinikId,Sifre")] Doktor doktor)
         {
             if (HttpContext.Session.GetString("UserRole") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (ModelState.IsValid)
-            {
-                _context.Add(doktor);
+            _context.Add(doktor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(doktor);
+            
         }
 
         // GET: Doktor/Edit/5
@@ -101,6 +99,7 @@ public class DoktorController : Controller
             {
                 return NotFound();
             }
+            ViewData["poliklinikId"] = new SelectList(_context.Set<Poliklinik>(), "Id", "PoliklinikIsmi");
             return View(doktor);
         }
 
@@ -109,8 +108,10 @@ public class DoktorController : Controller
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Isim,odaNo,Sifre")] Doktor doktor)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Isim,odaNo,poliklinikId,Sifre")] Doktor doktor)
         {
+            var Doktor = await _context.Doktor.FindAsync(id);
+            doktor.Sifre = Doktor.Sifre;
             if (HttpContext.Session.GetString("UserRole") != "Admin")
             {
                 return RedirectToAction("Index", "Home");
@@ -119,28 +120,12 @@ public class DoktorController : Controller
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            
                     _context.Update(doktor);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DoktorExists(doktor.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+              
                 return RedirectToAction(nameof(Index));
-            }
-            return View(doktor);
+
         }
 
         // GET: Doktor/Delete/5
@@ -216,6 +201,23 @@ public class DoktorController : Controller
             }
             TempData["hata"] = "Kullanıcı adı veya şifre hatalı";
             return RedirectToAction("DoktorGiris");
+        }
+        public IActionResult GetDoktorIsim(int doktorId)
+        {
+
+            // Doktor ID'sine göre veritabanından doktoru bul
+            var doktor = _context.Doktor.FirstOrDefault(d => d.Id == doktorId);
+
+            if (doktor != null)
+            {
+                // Doktor varsa ismi JSON formatında döndür
+                return Ok(new { DoktorIsim = doktor.Isim });
+            }
+            else
+            {
+                // Doktor bulunamazsa 404 Not Found döndür
+                return NotFound();
+            }
         }
     }
 }

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<HastaneRandevuSistemi.Models.Randevu>
+
+<h3>RandevuListesi</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RandevuTarihi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoktorId)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.RandevuTarihi)
+                </td>
+                <td>
+                   @Html.DisplayFor(model=>item.DoktorId)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
